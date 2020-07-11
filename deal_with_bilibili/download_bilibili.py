@@ -1,11 +1,9 @@
-'''
+"""
 下载b站新番时间表并显示
 下载页面
-'''
-
-import requests
-from pprint import pprint
+"""
 import json
+import requests
 
 # 调用API并存储响应
 url = 'https://bangumi.bilibili.com/web_api/timeline_global'
@@ -17,7 +15,7 @@ response_dict = r.json()
 
 filename = 'bilibili_schedule.json'
 with open(filename, 'w') as file_object:
-    json.dump(response_dict, file_object)
+    json.dump(response_dict, file_object, indent=4)  # ndent=4 写成pprint那个样子
     # response_dict = json.load(file_object)
 
 
@@ -31,11 +29,12 @@ def show_page(file_dict):
             print(result['date'])
             seasons = result['seasons']
             for season in seasons:
-                try:
+                if 'pub_index' in season:
                     print(str(season['pub_time']) + ' ' + str(season['title']) + ' ' + str(season['pub_index']))
-                except:
+                elif 'delay_index' in season:
                     print(str(season['pub_time']) + ' ' + str(season['title']) + ' ' + str(season['delay_index']))
-
+                # 或者 try    except KeyError
         print('\n')
+
 
 show_page(response_dict)
